@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% block title %}Tweets{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-6">
+		<div id="streamBar" style="width: 480px; height: 400px;"></div>
+	</div>
+	<div class="col-md-6">
+		<div id="streamPie" style="width: 480px; height: 400px;"></div>
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-md-8" id="tweetList">
+		{% for tweet in tweets %}
+	        <div class="row">
+	        	<div class="col-md-2">
+	        		<img src="{{tweet.user.profile_image_url}}" />
+	        	</div>
+	        	<div class="col-md-10">
+	        		<h5>@{{ tweet.user.screen_name}}</h5>
+	        		<h4>{{ tweet.text }}</h4>
+	        		<script>
+	        			var date = new Date(parseInt({{tweet.timestamp_ms}}));
+	        			//console.log(date);
+	        			document.write('<h6><i>created at: '+date.toString()+'</i></h6>');
+	        		</script>
+	        	</div>
+	        </div>
+	    {% endfor %}
+	</div>
+	<div class="col-md-4">
+    	<div id="qaBar" style="width: 480px; height: 400px;"></div>
+    	<div id="qaPie" style="width: 480px; height: 400px;"></div>
+    </div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-md-12">
+		<div id="timeSeries"></div>
+	</div>
+</div>
+{% endblock %}
+{% block extra_js %}
+	<script>
+		// our endpoints we use to get json data, these are relative to the base url
+		var streamEndpoint = "/tweets/counts/";
+		var qaEndpoint = "/tweets/qa-counts/";
+		var timeSeriesEndpoint = "/tweets/time-series/";
+
+		// setup some objects for each chart
+		var streamPieChart = {
+			'name' : 'streamPie', // div name
+			'title' : '% of tweets stream demo'
+		};
+		var streamBarChart = {
+			'name' : 'streamBar', 
+			'title' : '# of tweets stream demo'
+		};
+		var qaPieChart = {
+			'name' : 'qaPie',
+			'title' : '% #arstem**** demo'
+		};
+		var qaBarChart = {
+			'name' : 'qaBar',
+			'title' : '# of #arstem**** demo'
+		};
+		var timeSeriesDiv = {
+			'name' : 'timeSeries',
+			'title' : 'User Stats by Tweet Timestamp'
+		};
+
+		function drawCharts(endpoint, pieDiv, barDiv ){
+			$.getJSON(endpoint, function(data){
+				var keys = [];
+				var values = [];
+				$.each( data, function( key, val ) {
+				  keys.push( key);
+				  values.push(val);
+				});
+				// bar chart data
+				var barData = [
+				  {
+				    x: keys,
+				    y: values,
+				    type: 'bar'
+				  }
+				];
+				// pie chart data
+				var pieData = [
+				  {
+				    labels: keys,
+				    values: values,
+				    type: 'pie'
+				  }
+				];
+				// bind and display our chart
+				Plotly.newPlot(barDiv.name, barData,
+					{title: barDiv.title});
+				Plotly.newPlot(pieDiv.name, pieData,
+					{title: pieDiv.title});
+			});
+		}
+
+		function drawTimeSeries(endpoint, aDiv){
+			$.getJSON(endpoint, function(data){
+				var keys = [];
+				var followers = [];
+				var friends = [];
+				var statuses = [];
+				var favorites = [];
+
+				$.each( data, function( k, v ) {	
+					$.each(v, function(key, val){
+						keys.push(key);
+						followers.push(val[0]);
+						friends.push(val[1]);
+						statuses.push(val[2]);
+						favorites.push(val[3]);
+					});
+				});
+				// series data 1
+				var sd1 = {
+				    x: keys,
+				    y: followers,
+				    name: '# followers',
+				    mode: 'lines+markers'
+				  };
+				var sd2 = {
+					x: keys,
+				    y: friends,
+				    name: '# friends',
+				    mode: 'lines+markers'
+				}
+				var sd3 = {
+					x: keys,
+				    y: statuses,
+				    name: '# statuses',
+				    mode: 'lines+markers'
+				}
+				var sd4 = {
+					x: keys,
+				    y: favorites,
+				    name: '# favorites',
+				    mode: 'lines+markers'
+				}
+				var seriesData = [sd1, sd2, sd3, sd4];
+				// bind and display our chart
+				Plotly.newPlot(aDiv.name, seriesData,
+					{title: aDiv.title});
+			});
+		}
+		drawCharts(streamEndpoint, streamPieChart, streamBarChart);
+        drawCharts(qaEndpoint, qaPieChart, qaBarChart);
+        drawTimeSeries(timeSeriesEndpoint, timeSeriesDiv);
+		//$(document).ready(
+        //    function() {
+        //        setInterval(function() {
+        //            drawCharts(streamEndpoint, streamPieChart, streamBarChart);
+        //            drawCharts(qaEndpoint, qaPieChart, qaBarChart);
+        //            drawTimeSeries(timeSeriesEndpoint, timeSeriesDiv);
+        //       }, 5000);
+        //    });
+  	</script>
+{% endblock %}
