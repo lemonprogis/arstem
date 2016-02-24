@@ -4,22 +4,16 @@ Sample Project used in demonstrating what SPP does, using twitter api.
 
 ## Installation
 below are what's used in this demo
-
 python
 https://www.python.org/ 
-
 MongoDB
 https://www.mongodb.com
-
 Django
 https://www.djangoproject.com/  
-
 MongoEngine
 http://mongoengine.org/ 
-
 Pymongo
 https://api.mongodb.org/python/current/ 
-
 Tweepy
 http://www.tweepy.org/ 
 
