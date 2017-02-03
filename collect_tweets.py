@@ -2,10 +2,18 @@ import json
 import pymongo
 import tweepy
 
-consumer_key = ""
-consumer_secret = ""
-access_key = ""
-access_secret = ""
+def readJSONConfig(configFile="TweetReader.json"):
+    with open(configFile, 'r') as config:
+        configData = json.load(config)
+    return configData
+
+_configData = readJSONConfig() 
+
+
+consumer_key = _configData['consumer_key']
+consumer_secret =  _configData['consumer_secret']
+access_key = _configData['access_token']
+access_secret = _configData['access_token_secret']
 
 keywords = [
     '#wind', 

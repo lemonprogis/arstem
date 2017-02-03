@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.serializers import serialize
-from models import Tweets
+from presentation.models import Tweets
 import json, datetime
 
 def index(request):
