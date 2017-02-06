@@ -26,6 +26,17 @@ http://www.tweepy.org/
 
 ## Usage
 
+You'll need to create a JSON Configuration file named "TweetReader.json" for your Twitter API credentials. This JSON will look like this:
+
+{
+	"consumer_key":"",
+	"consumer_secret":"",
+	"access_token":"",
+	"access_token_secret":""
+}
+
+
+
 Once the above components have been installed, you can run the tweet collector
 python collect_tweets.py
 

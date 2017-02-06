@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.serializers import serialize
-from models import Tweets
+from presentation.models import Tweets
 import json, datetime
 
 def index(request):
@@ -10,9 +10,9 @@ def index(request):
 
 def tweet_counts(request):
 	tweets_cnt = { "#wind" : Tweets.objects(text__icontains='#wind').count(), 
-		"#coal":Tweets.objects(text__icontains='#coal').count(),
-		"#nuclear":Tweets.objects(text__icontains='#nuclear').count(),
-		"#hydro":Tweets.objects(text__icontains='#hydro').count()
+		              "#coal":Tweets.objects(text__icontains='#coal').count(),
+		              "#nuclear":Tweets.objects(text__icontains='#nuclear').count(),
+		              "#hydro":Tweets.objects(text__icontains='#hydro').count()
 		}
 	return HttpResponse(json.dumps(tweets_cnt), content_type='application/json')
 
